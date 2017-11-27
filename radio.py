@@ -16,7 +16,7 @@ volume_down_command = ""
 
 
 def read_radiostations():
-    station_file = open("/Users/hafager/Projects/radioproject/raspradio/radiostations.txt", "r")
+    station_file = open("radiostations.txt", "r")
     stations = station_file.read().splitlines()
     station_file.close()
     radio_stations = []
