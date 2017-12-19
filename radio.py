@@ -3,6 +3,8 @@
 from subprocess import call
 import time
 
+import radioActions
+
 #
 # https://github.com/yeokm1/pi-radio
 #
@@ -27,25 +29,11 @@ def read_radiostations():
     print radio_stations[0]["url"]
     return radio_stations
 
-def play_station(station):
-    print(play_command % station["url"])
-
-    #call([play_command, station.url])
-    call(play_command % station["url"], shell=True)
-
 radio_stations = read_radiostations()
 
-def stop_radio():
-    call(stop_command, shell=True)
-    print("stop")
 
-def volume_up():
-    print("Volume up")
 
-def volume_down():
-    print("Volume down")
-
-play_station(radio_stations[0])
+radioActions.play_station(radio_stations[0])
 
 time.sleep(3)
 
