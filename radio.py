@@ -37,4 +37,4 @@ radioActions.play_station(radio_stations[0])
 
 time.sleep(3)
 
-stop_radio()
+radioActions.stop_radio()
