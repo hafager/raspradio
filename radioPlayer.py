@@ -21,7 +21,9 @@ class Player(object):
         self.currentStation = 0
 
     def play(self):
-        print("Playing current station {} URL: {}".format(self.currentStation, self.radioStations[self.currentStation]["url"]))
+        print("Playing current station {} URL: {}".format(
+                    self.currentStation,
+                    self.radioStations[self.currentStation]["url"]))
         call(play_command.format(self.radioStations[self.currentStation]["url"]), shell=True)
         self.status = "playing"
 
@@ -29,6 +31,14 @@ class Player(object):
         call(stop_command, shell=True)
         print("stop")
         self.status = "stopped"
+
+    def update(self):
+        """
+            Stops and starts the player.
+            Should be called when the channel is switched
+        """
+        call(stop_command, shell=True)
+        self.play()
 
 
     def playStation(self, station):
@@ -46,8 +56,7 @@ class Player(object):
         """
         print("Next Station")
         self.currentStation += 1
-        self.stop()
-        self.play()
+        self.update()
 
     def previousStation(self):
         """
@@ -56,8 +65,7 @@ class Player(object):
         """
         print("Previous Station")
         self.currentStation -= 1
-        self.stop()
-        self.play()
+        self.update()
 
     def volumeUp(self):
         print("Volume up")

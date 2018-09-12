@@ -9,20 +9,42 @@ from radioPlayer import Player
 # https://github.com/yeokm1/pi-radio
 #
 
-radioPlayer = Player()
-radioPlayer.play()
 
-#radioActions.play_station(radio_stations[0])
 
-time.sleep(5)
+class Radio(object):
 
-radioPlayer.nextStation()
+    def __init__(self):
+        super(Player, self).__init__()
 
-time.sleep(5)
-radioPlayer.nextStation()
+def main():
+    radioPlayer = Player()
 
-time.sleep(5)
-radioPlayer.previousStation()
-time.sleep(5)
+    COMMANDS = {
+        'q': radioPlayer.play,
+        'w': radioPlayer.stop,
+        'e': radioPlayer.previousStation,
+        'r': radioPlayer.nextStation,
+    }
 
-radioPlayer.stop()
+    while True:
+        command = input("Command: ")
+        COMMANDS[command]()
+
+    # radioPlayer.play()
+    #
+    # time.sleep(5)
+    # radioPlayer.nextStation()
+    # time.sleep(5)
+    # radioPlayer.nextStation()
+    # time.sleep(5)
+    # radioPlayer.nextStation()
+    # time.sleep(5)
+    # radioPlayer.previousStation()
+    # time.sleep(5)
+    #
+    radioPlayer.stop()
+
+
+
+if __name__ == '__main__':
+    main()
