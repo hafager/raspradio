@@ -3,38 +3,26 @@
 from subprocess import call
 import time
 
-import radioActions
+from radioPlayer import Player
 
 #
 # https://github.com/yeokm1/pi-radio
 #
 
-play_command = "mplayer -cache-min 2 %s </dev/null >/dev/null 2>&1 &"
-stop_command = "killall mplayer"
-stdout_command = " </dev/null >/dev/null 2>&1 &"
-volume_up_command = ""
-volume_down_command = ""
+radioPlayer = Player()
+radioPlayer.play()
 
+#radioActions.play_station(radio_stations[0])
 
+time.sleep(5)
 
-def read_radiostations():
-    station_file = open("radiostations.txt", "r")
-    stations = station_file.read().splitlines()
-    station_file.close()
-    radio_stations = []
-    for station in stations:
-        name, url = station.split("|")
-        radio_stations.append({"name": name, "url": url})
+radioPlayer.nextStation()
 
-    print radio_stations[0]["url"]
-    return radio_stations
+time.sleep(5)
+radioPlayer.nextStation()
 
-radio_stations = read_radiostations()
+time.sleep(5)
+radioPlayer.previousStation()
+time.sleep(5)
 
-
-
-radioActions.play_station(radio_stations[0])
-
-time.sleep(3)
-
-radioActions.stop_radio()
+radioPlayer.stop()
