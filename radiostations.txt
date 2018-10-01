@@ -1,3 +1,5 @@
 P1 | http://lyd.nrk.no/nrk_radio_p1_ostlandssendingen_mp3_h
+P1+ | http://lyd.nrk.no/nrk_radio_p1pluss_mp3_h
 P2 | http://lyd.nrk.no/nrk_radio_p2_mp3_h
 P3 | http://lyd.nrk.no/nrk_radio_p3_mp3_h
+P13 | http://lyd.nrk.no/nrk_radio_p13_mp3_h

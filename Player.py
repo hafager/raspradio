@@ -4,6 +4,12 @@ from subprocess import call
 import time
 
 
+"""
+    Todo:
+    - Make it possible to change channel when not playing without starting the stream.
+"""
+
+
 play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
@@ -21,8 +27,9 @@ class Player(object):
         self.currentStation = 0
 
     def play(self):
-        print("Playing current station {} URL: {}".format(
+        print("Playing current station id {} called {} from URL: {}".format(
                     self.currentStation,
+                    self.radioStations[self.currentStation]["name"],
                     self.radioStations[self.currentStation]["url"]))
         call(play_command.format(self.radioStations[self.currentStation]["url"]), shell=True)
         self.status = "playing"
@@ -41,13 +48,6 @@ class Player(object):
         self.play()
 
 
-    def playStation(self, station):
-        #print(play_command % station["url"])
-        print(play_command.format(self.radiostations[0]["url"]))
-
-        #call([play_command, station.url])
-        call(play_command.format(self.radiostations[0]["url"]), shell=True)
-
 
     def nextStation(self):
         """
@@ -56,7 +56,8 @@ class Player(object):
         """
         print("Next Station")
         self.currentStation += 1
-        self.update()
+        if self.status == "playing":
+            self.update()
 
     def previousStation(self):
         """
@@ -65,13 +66,22 @@ class Player(object):
         """
         print("Previous Station")
         self.currentStation -= 1
-        self.update()
+        if self.status == "playing":
+            self.update()
 
     def volumeUp(self):
         print("Volume up")
 
     def volumeDown(self):
         print("Volume down")
+
+    def playStation(self, station):
+        # A method that can be changed to the station given as an argument. TODO
+        #print(play_command % station["url"])
+        print(play_command.format(self.radiostations[0]["url"]))
+
+        #call([play_command, station.url])
+        call(play_command.format(self.radiostations[0]["url"]), shell=True)
 
 
 def readRadioStations():
