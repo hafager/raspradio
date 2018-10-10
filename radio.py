@@ -2,6 +2,7 @@
 import sys
 from subprocess import call
 import time
+import readchar
 
 from Player import Player
 
@@ -28,10 +29,12 @@ class Radio(object):
 
         while True:
             try:
-                command = input("Command: ")
+                command = readchar.readchar()
+                # command = input("Command: ")
                 self.COMMANDS[command]()
             except KeyError:
-                print("Wrong key.")
+                self.radioPlayer.stop()
+                sys.exit("Exiting")
             except KeyboardInterrupt:
                 self.radioPlayer.stop()
                 sys.exit("KeyboardInterrupt")
@@ -39,21 +42,7 @@ class Radio(object):
 
 
 def main():
-    # radioPlayer = Player()
-    #
-    #
-    #
-    # while True:
-    #     try:
-    #         command = input("Command: ")
-    #         COMMANDS[command]()
-    #     except KeyError:
-    #         print("Wrong key.")
-    #     except KeyboardInterrupt:
-    #         radioPlayer.stop()
-    #         sys.exit("KeyboardInterrupt")
-    #
-    # radioPlayer.stop()
+
     radio = Radio()
     radio.startRadio()
 
