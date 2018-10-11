@@ -2,6 +2,7 @@
 
 from subprocess import call
 import time
+from threading import Thread
 
 
 """
@@ -16,15 +17,24 @@ stdout_command = " </dev/null >/dev/null 2>&1 &"
 volume_up_command = ""
 volume_down_command = ""
 
-class Player(object):
+class Player(Thread):
     """
         docstring for Player.
     """
-    def __init__(self):
+    def __init__(self, queue):
         super(Player, self).__init__()
+        self.queue = queue
         self.status = "stopped"
         self.radioStations = readRadioStations()
         self.currentStation = 0
+        
+        # Mapping between queue items and local methods.
+        self.COMMANDS = {
+            "play": self.play,
+            "stop": self.stop,
+            "next": self.previousStation,
+            "previous": self.nextStation
+        }
 
     def play(self):
         print("Playing current station id {} called {} from URL: {}".format(
@@ -82,6 +92,19 @@ class Player(object):
 
         #call([play_command, station.url])
         call(play_command.format(self.radiostations[0]["url"]), shell=True)
+
+    # Overrides then run() method in Thread
+    def run(self):
+        while True:
+            action = self.queue.get()
+            if action is None:
+                break
+            #
+            # Execute the action.
+            #
+            if action in self.COMMANDS.keys():
+                self.COMMANDS[action]()
+            self.queue.task_done()
 
 
 def readRadioStations():
