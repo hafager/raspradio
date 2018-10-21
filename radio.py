@@ -47,7 +47,10 @@ class Radio(object):
         print("Volume")
 
     def changeMode(self, value):
-        print("Mode")
+        if value == "play":
+            self.playerQueue.put("play")
+        elif value == "stop":
+            self.playerQueue.put("stop")
 
     def changeUsingKeys(self, value):
         try:

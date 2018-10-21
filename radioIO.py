@@ -49,22 +49,42 @@ class RadioIO(Thread):
 
 
     def readMode(self):
+        """
+            ["mode", "play"]
+            ["mode", "stop"]
+        """
         return "radio"
 
     def readVolume(self):
+        """
+            ["volume", 10.0]
+        """
         return "5"
 
     def readStation(self):
+        """
+            ["station", 53.2]
+        """
         bus.write_byte(address,A0)
         value = bus.read_byte(ADDRESS)
         print("AOUT:%1.3f  " %(value*3.3/255)) # Current voltage
         print("AOUT:{0:5.1}%".format((value/255)*100)) # Percent of max
-        return round((value/255)*100, 1) # Return a number between 0 - 100 with 1 decimal.
+
+        stationValue = round((value/255)*100, 1) # Return a number between 0 - 100 with 1 decimal.
+
+        diff = self.currentStation - stationValue
+
+        if abs(diff) > 0.5: # Check if it at least changes by a certain amount. To avoid unstable values.
+            self.currentStation = stationValue
+            self.queue.put(["station", self.currentStation])
 
     def readTone(self):
         return "high"
 
     def readKey(self):
+        """
+            ["key", "q"]
+        """
         try:
             key = readchar.readchar()
             if key in KEYS:
@@ -80,11 +100,7 @@ class RadioIO(Thread):
     def run(self):
         if not self.debug:
             while True:
-                stationValue = self.readStation()
-                diff = self.currentStation - stationValue
-                if diff > (diff/abs(diff)) * 0.5: # Check if it at least changes by a certain amount. To avoid unstable values.
-                    self.currentStation = stationValue
-                    self.queue.put(["station", self.currentStation])
+                self.readStation()
 
                 time.sleep(0.1)
 
