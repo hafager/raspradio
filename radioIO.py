@@ -1,4 +1,14 @@
 # This class will contain methods for reading input from the physical radio.
+"""
+    Info GPIO and I2C: https://www.raspberrypi.org/documentation/usage/gpio/
+    Info potentiometer; https://www.sparkfun.com/products/9939
+    Enable I2C: https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
+    Data sheet AD/DA Converter PCF8591: https://www.nxp.com/docs/en/data-sheet/PCF8591.pdf
+    Example PCF8591: https://www.waveshare.com/wiki/Raspberry_Pi_Tutorial_Series:_PCF8591_AD/DA
+"""
+
+
+
 
 import readchar
 import smbus
@@ -26,8 +36,8 @@ class RadioIO(Thread):
         return "5"
 
     def readStation(self):
-        bus.write_byte(address,self.A0)
-        value = bus.read_byte(self.ADDRESS)
+        bus.write_byte(address,A0)
+        value = bus.read_byte(ADDRESS)
         print("AOUT:%1.3f  " %(value*3.3/255))
         print("AOUT:{} \%".format((value/255)*100))
         return value

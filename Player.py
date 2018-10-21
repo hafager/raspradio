@@ -7,7 +7,7 @@ from threading import Thread
 
 """
     Todo:
-    - Make it possible to change channel when not playing without starting the stream.
+    [X] Make it possible to change channel when not playing without starting the stream.
 """
 
 
