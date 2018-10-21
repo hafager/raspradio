@@ -86,7 +86,6 @@ def readRadioStations():
     for station in stations:
         name, url = station.split("|")
         radioStations.append({"name": name, "url": url})
-
     print(radioStations)
     return radioStations
 

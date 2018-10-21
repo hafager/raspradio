@@ -63,9 +63,10 @@ class Player(Thread):
             Nothing happens if you are at the last station
         """
         print("Next Station")
-        self.currentStation += 1
-        if self.status == "playing":
-            self.update()
+        if self.currentStation < len(self.radioStations) - 1:
+            self.currentStation += 1
+            if self.status == "playing":
+                self.update()
 
     def previousStation(self):
         """
@@ -73,9 +74,10 @@ class Player(Thread):
             Nothing happens if you are at the first station
         """
         print("Previous Station")
-        self.currentStation -= 1
-        if self.status == "playing":
-            self.update()
+        if self.currentStation != 0:
+            self.currentStation -= 1
+            if self.status == "playing":
+                self.update()
 
     def volumeUp(self):
         print("Volume up")
