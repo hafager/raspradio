@@ -32,8 +32,8 @@ class Player(Thread):
         self.COMMANDS = {
             "play": self.play,
             "stop": self.stop,
-            "next": self.previousStation,
-            "previous": self.nextStation
+            "previous": self.previousStation,
+            "next": self.nextStation
         }
 
     def play(self):
@@ -95,6 +95,7 @@ class Player(Thread):
     def run(self):
         while True:
             action = self.queue.get()
+            print("Found {} in the Player Queue".format(action))
             if action is None:
                 break
             #

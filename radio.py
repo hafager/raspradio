@@ -6,6 +6,7 @@ import readchar
 from queue import Queue
 
 from Player import Player
+from radioIO import RadioIO
 
 #
 # https://github.com/yeokm1/pi-radio
@@ -18,39 +19,63 @@ class Radio(object):
 
     def __init__(self):
         super(Radio, self).__init__()
-        self.queue = Queue()
+        self.playerQueue = Queue()
+        self.ioQueue = Queue()
         self.radioStations = readRadioStations()
-        self.radioPlayer = Player(self.queue)
+        self.radioPlayer = Player(self.playerQueue, self.radioStations)
         self.radioPlayer.start()
-        # self.COMMANDS = {
-        #     'q': self.radioPlayer.play,
-        #     'w': self.radioPlayer.stop,
-        #     'e': self.radioPlayer.previousStation,
-        #     'r': self.radioPlayer.nextStation
-        # }
-        self.COMMANDS = {
+        self.radioIO = RadioIO(self.ioQueue, debug=True)
+        self.radioIO.start()
+
+        self.PLAYER_COMMANDS = {
             'q': "play",
             'w': "stop",
-            'e': "next",
-            'r': "previous"
+            'e': "previous",
+            'r': "next"
         }
+        self.IO_COMMANDS = {
+            "station": self.changeStation,
+            "volume": self.changeVolume,
+            "mode": self.changeMode,
+            "key": self.changeUsingKeys
+        }
+
+    def changeStation(self, value):
+        print("Station")
+
+    def changeVolume(self, value):
+        print("Volume")
+
+    def changeMode(self, value):
+        print("Mode")
+
+    def changeUsingKeys(self, value):
+        try:
+            print("Put {} into the Player Queue".format(self.PLAYER_COMMANDS[value]))
+            self.playerQueue.put(self.PLAYER_COMMANDS[value])
+        except KeyError:
+            self.playerQueue.put(None)
+            self.radioPlayer.stop()
+            sys.exit("Exiting")
+        except KeyboardInterrupt:
+            self.playerQueue.put(None)
+            self.radioPlayer.stop()
+            sys.exit("KeyboardInterrupt")
 
     def start(self):
 
         while True:
-            try:
-                command = readchar.readchar()
-                # command = input("Command: ")
-                #self.COMMANDS[command]()
-                self.queue.put(self.COMMANDS[command])
-            except KeyError:
-                self.queue.put(None)
+            action = self.ioQueue.get()
+            if action is None:
+                self.playerQueue.put(None)
                 self.radioPlayer.stop()
                 sys.exit("Exiting")
-            except KeyboardInterrupt:
-                self.queue.put(None)
-                self.radioPlayer.stop()
-                sys.exit("KeyboardInterrupt")
+                break
+
+            # TODO: Check for invalid values
+            self.IO_COMMANDS[action[0]](action[1])
+            self.ioQueue.task_done()
+
 
 
 def readRadioStations():
