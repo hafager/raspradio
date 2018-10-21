@@ -19,6 +19,7 @@ class Radio(object):
     def __init__(self):
         super(Radio, self).__init__()
         self.queue = Queue()
+        self.radioStations = readRadioStations()
         self.radioPlayer = Player(self.queue)
         self.radioPlayer.start()
         # self.COMMANDS = {
@@ -51,6 +52,18 @@ class Radio(object):
                 self.radioPlayer.stop()
                 sys.exit("KeyboardInterrupt")
 
+
+def readRadioStations():
+    stationFile = open("radiostations.txt", "r")
+    stations = stationFile.read().splitlines()
+    stationFile.close()
+    radioStations = []
+    for station in stations:
+        name, url = station.split("|")
+        radioStations.append({"name": name, "url": url})
+
+    print(radioStations)
+    return radioStations
 
 
 def main():

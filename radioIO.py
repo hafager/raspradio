@@ -1,14 +1,23 @@
 # This class will contain methods for reading input from the physical radio.
 
 import readchar
+import smbus
+import time
 
-class RadioIO(object):
+ADDRESS = 0x48
+A0 = 0x40
+A1 = 0x41
+A2 = 0x42
+A3 = 0x43
+
+class RadioIO(Thread):
     """
         docstring for RadioIO.
     """
-    def __init__(self):
+    def __init__(self, queue):
         super(RadioIO, self).__init__()
-        self.test = "test"
+        self.queue = queue
+        self.bus = smbus.SMBus(1)
 
     def readMode(self):
         return "radio"
@@ -17,13 +26,23 @@ class RadioIO(object):
         return "5"
 
     def readStation(self):
-        return "p3"
+        bus.write_byte(address,self.A0)
+        value = bus.read_byte(self.ADDRESS)
+        print("AOUT:%1.3f  " %(value*3.3/255))
+        print("AOUT:{} \%".format((value/255)*100))
+        return value
 
     def readTone(self):
         return "high"
 
     def readKey(self):
         readchar.readchar()
+
+    def run(self):
+        while True:
+            station_value = self.readStation()
+            print("AOUT:%1.3f  " %(station_value*3.3/255))
+            time.sleep(0.1)
 
 def main():
     print("test")
