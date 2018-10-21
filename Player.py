@@ -2,11 +2,12 @@
 
 from subprocess import call
 import time
+from threading import Thread
 
 
 """
     Todo:
-    - Make it possible to change channel when not playing without starting the stream.
+    [X] Make it possible to change channel when not playing without starting the stream.
 """
 
 
@@ -16,15 +17,24 @@ stdout_command = " </dev/null >/dev/null 2>&1 &"
 volume_up_command = ""
 volume_down_command = ""
 
-class Player(object):
+class Player(Thread):
     """
         docstring for Player.
     """
-    def __init__(self):
+    def __init__(self, queue, radioStations):
         super(Player, self).__init__()
+        self.queue = queue
         self.status = "stopped"
-        self.radioStations = readRadioStations()
+        self.radioStations = radioStations
         self.currentStation = 0
+
+        # Mapping between queue items and local methods.
+        self.COMMANDS = {
+            "play": self.play,
+            "stop": self.stop,
+            "previous": self.previousStation,
+            "next": self.nextStation
+        }
 
     def play(self):
         print("Playing current station id {} called {} from URL: {}".format(
@@ -47,17 +57,16 @@ class Player(object):
         call(stop_command, shell=True)
         self.play()
 
-
-
     def nextStation(self):
         """
             Changes to next station.
             Nothing happens if you are at the last station
         """
         print("Next Station")
-        self.currentStation += 1
-        if self.status == "playing":
-            self.update()
+        if self.currentStation < len(self.radioStations) - 1:
+            self.currentStation += 1
+            if self.status == "playing":
+                self.update()
 
     def previousStation(self):
         """
@@ -65,9 +74,10 @@ class Player(object):
             Nothing happens if you are at the first station
         """
         print("Previous Station")
-        self.currentStation -= 1
-        if self.status == "playing":
-            self.update()
+        if self.currentStation != 0:
+            self.currentStation -= 1
+            if self.status == "playing":
+                self.update()
 
     def volumeUp(self):
         print("Volume up")
@@ -83,15 +93,16 @@ class Player(object):
         #call([play_command, station.url])
         call(play_command.format(self.radiostations[0]["url"]), shell=True)
 
-
-def readRadioStations():
-    stationFile = open("radiostations.txt", "r")
-    stations = stationFile.read().splitlines()
-    stationFile.close()
-    radioStations = []
-    for station in stations:
-        name, url = station.split("|")
-        radioStations.append({"name": name, "url": url})
-
-    print(radioStations)
-    return radioStations
+    # Overrides then run() method in Thread
+    def run(self):
+        while True:
+            action = self.queue.get()
+            print("Found {} in the Player Queue".format(action))
+            if action is None:
+                break
+            #
+            # Execute the action.
+            #
+            if action in self.COMMANDS.keys():
+                self.COMMANDS[action]()
+            self.queue.task_done()
