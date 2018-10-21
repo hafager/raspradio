@@ -21,13 +21,13 @@ class Player(Thread):
     """
         docstring for Player.
     """
-    def __init__(self, queue):
+    def __init__(self, queue, radioStations):
         super(Player, self).__init__()
         self.queue = queue
         self.status = "stopped"
-        self.radioStations = readRadioStations()
+        self.radioStations = radioStations
         self.currentStation = 0
-        
+
         # Mapping between queue items and local methods.
         self.COMMANDS = {
             "play": self.play,
@@ -56,8 +56,6 @@ class Player(Thread):
         """
         call(stop_command, shell=True)
         self.play()
-
-
 
     def nextStation(self):
         """
@@ -105,16 +103,3 @@ class Player(Thread):
             if action in self.COMMANDS.keys():
                 self.COMMANDS[action]()
             self.queue.task_done()
-
-
-def readRadioStations():
-    stationFile = open("radiostations.txt", "r")
-    stations = stationFile.read().splitlines()
-    stationFile.close()
-    radioStations = []
-    for station in stations:
-        name, url = station.split("|")
-        radioStations.append({"name": name, "url": url})
-
-    print(radioStations)
-    return radioStations
