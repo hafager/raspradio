@@ -13,6 +13,7 @@ from threading import Thread
 import sys
 import readchar
 if sys.platform != "darwin":
+    print("Not running on OSX")
     import smbus
 import time
 
@@ -65,8 +66,8 @@ class RadioIO(Thread):
         """
             ["station", 53.2]
         """
-        bus.write_byte(address,A0)
-        value = bus.read_byte(ADDRESS)
+        self.bus.write_byte(address,A0)
+        value = self.bus.read_byte(ADDRESS)
         print("AOUT:%1.3f  " %(value*3.3/255)) # Current voltage
         print("AOUT:{0:5.1}%".format((value/255)*100)) # Percent of max
 
