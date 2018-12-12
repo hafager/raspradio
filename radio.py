@@ -53,9 +53,9 @@ class Radio(object):
         #self.playerQueue.put(new_volume)
 
         if new_volume < self.current_volume:
-            self.playerQueue.put(self.volume_down)
+            self.playerQueue.put("volume_down")
         elif new_volume > self.current_volume:
-            self.playerQueue.put(self.volume_up)
+            self.playerQueue.put("volume_up")
         self.current_volume = new_volume
 
 
