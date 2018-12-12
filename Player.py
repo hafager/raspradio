@@ -16,7 +16,7 @@ from threading import Thread
 play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
-volume_command = "amixer sset PCM {}"
+volume_command = "amixer sset PCM {}%"
 
 MAX_VOLUME = 100
 

@@ -52,11 +52,9 @@ class Radio(object):
         print("Set volume to: {}".format(new_volume))
         #self.playerQueue.put(new_volume)
 
-        if new_volume < self.current_volume:
-            self.playerQueue.put("volume_down")
-        elif new_volume > self.current_volume:
-            self.playerQueue.put("volume_up")
-        self.current_volume = new_volume
+        if new_volume != self.current_volume:
+            self.radioPlayer.set_volume(new_volume)
+            self.current_volume = new_volume
 
 
     def changeMode(self, value):
