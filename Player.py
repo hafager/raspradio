@@ -93,11 +93,11 @@ class Player(Thread):
         call(volume_command.format("1-"))
 
     def set_volume(self, new_volume):
-        if new_volume > 0 and new_volume <= 100:
+        if new_volume < 0 or new_volume > 100:
+            print("Error: Inappropriate volume.")
+        else:
             print("Setting volume to {}".format(new_volume))
             call(volume_command.format(new_volume))
-        else:
-            print("Error: Unappropriate volume.")
 
 
     def playStation(self, station):
