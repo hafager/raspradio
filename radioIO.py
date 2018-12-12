@@ -44,7 +44,7 @@ class RadioIO(Thread):
         if not self.debug:
             self.bus = smbus.SMBus(1)
             self.currentVolume = self.readVolume()
-            self.currentStation = self.readStation()
+            self.currentStation = 0 #self.readStation()
         self.currentVolume = 0
         self.currentStation = 0
 
@@ -66,7 +66,7 @@ class RadioIO(Thread):
         """
             ["station", 53.2]
         """
-        self.bus.write_byte(address,A0)
+        self.bus.write_byte(ADDRESS,A0)
         value = self.bus.read_byte(ADDRESS)
         print("AOUT:%1.3f  " %(value*3.3/255)) # Current voltage
         print("AOUT:{0:5.1}%".format((value/255)*100)) # Percent of max

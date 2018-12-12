@@ -24,7 +24,7 @@ class Radio(object):
         self.radioStations = readRadioStations()
         self.radioPlayer = Player(self.playerQueue, self.radioStations)
         self.radioPlayer.start()
-        self.radioIO = RadioIO(self.ioQueue, debug=False)
+        self.radioIO = RadioIO(self.ioQueue, debug=True)
         self.radioIO.start()
 
         self.PLAYER_COMMANDS = {
