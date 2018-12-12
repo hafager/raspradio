@@ -8,14 +8,17 @@ from threading import Thread
 """
     Todo:
     [X] Make it possible to change channel when not playing without starting the stream.
+    
+    Testing:
+    mplayer -cache-min 2 http://lyd.nrk.no/nrk_radio_p3_mp3_h
 """
 
-# mplayer -cache-min 2 http://lyd.nrk.no/nrk_radio_p3_mp3_h </dev/null >/dev/null 2>&1 &
 play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
-volume_up_command = ""
-volume_down_command = ""
+volume_command = "amixer sset PCM {0}"
+
+MAX_VOLUME = 100
 
 class Player(Thread):
     """
@@ -33,7 +36,9 @@ class Player(Thread):
             "play": self.play,
             "stop": self.stop,
             "previous": self.previousStation,
-            "next": self.nextStation
+            "next": self.nextStation,
+            "volume_up": self.volumeUp,
+            "volume_down": self.volumeDown
         }
 
     def play(self):
@@ -81,9 +86,19 @@ class Player(Thread):
 
     def volumeUp(self):
         print("Volume up")
+        call(volume_command.format("1+"))
 
     def volumeDown(self):
         print("Volume down")
+        call(volume_command.format("1-"))
+
+    def set_volume(self, new_volume):
+        if new_volume > 0 and new_volume <= 100:
+            print("Setting volume to {}".format(new_volume))
+            call(volume_command.format(new_volume))
+        else:
+            print("Error: Unappropriate volume.")
+
 
     def playStation(self, station):
         # A method that can be changed to the station given as an argument. TODO
