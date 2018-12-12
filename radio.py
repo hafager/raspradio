@@ -41,7 +41,7 @@ class Radio(object):
         }
 
     def changeStation(self, value):
-        print("Station")
+        print("Station: {0}".format(value))
 
     def changeVolume(self, value):
         print("Volume")
