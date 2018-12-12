@@ -44,7 +44,7 @@ class RadioIO(Thread):
         if not self.debug:
             self.bus = smbus.SMBus(1)
             self.currentVolume = self.readVolume()
-            self.currentStation = 0 #self.readStation()
+            self.currentStation = 0 # self.readStation() Have to find a way to initialize the values.
         self.currentVolume = 0
         self.currentStation = 0
 
@@ -66,16 +66,16 @@ class RadioIO(Thread):
         """
             ["station", 53.2]
         """
-        self.bus.write_byte(ADDRESS,A0)
+        self.bus.write_byte(ADDRESS, A0)
         value = self.bus.read_byte(ADDRESS)
-        print("AOUT:%1.3f  " %(value*3.3/255)) # Current voltage
-        print("AOUT:{0:5.1}%".format((value/255)*100)) # Percent of max
+        print("AOUT:%1.3f  " %(value*3.3/255))  # Current voltage
+        print("AOUT:{0:5.1}%".format((value/255)*100))  # Percent of max
 
-        stationValue = round((value/255)*100, 1) # Return a number between 0 - 100 with 1 decimal.
+        stationValue = round((value/255)*100, 1)  # Return a number between 0 - 100 with 1 decimal.
 
         diff = self.currentStation - stationValue
 
-        if abs(diff) > 0.5: # Check if it at least changes by a certain amount. To avoid unstable values.
+        if abs(diff) > 0.5:  # Check if it at least changes by a certain amount. To avoid unstable values.
             self.currentStation = stationValue
             self.queue.put(["station", self.currentStation])
 
@@ -97,6 +97,9 @@ class RadioIO(Thread):
             self.queue.put(None)
             sys.exit("Exiting")
         # return key
+
+    def readPin(self):
+        return 1
 
     def run(self):
         if not self.debug:
