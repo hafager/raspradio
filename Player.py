@@ -10,7 +10,7 @@ from threading import Thread
     [X] Make it possible to change channel when not playing without starting the stream.
 """
 
-
+# mplayer -cache-min 2 http://lyd.nrk.no/nrk_radio_p3_mp3_h </dev/null >/dev/null 2>&1 &
 play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
