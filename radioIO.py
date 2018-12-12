@@ -63,11 +63,9 @@ class RadioIO(Thread):
         self.bus.write_byte(ADDRESS, A0)
         value = self.bus.read_byte(ADDRESS)
 
-        volume_level = round((value / 255) * 100, 1)  # Return a number between 0 - 100 with 1 decimal.
+        volume_level = int((value / 255) * 100)  # Return a number between 0 - 100 with 1 decimal.
 
-        diff = self.currentVolume - volume_level
-
-        if abs(diff) > 0.5:  # Check if it at least changes by a certain amount. To avoid unstable values.
+        if volume_level != self.currentVolume:
             self.currentVolume = volume_level
             self.queue.put(["volume", self.currentVolume])
 
