@@ -27,6 +27,9 @@ class Radio(object):
         self.radioIO = RadioIO(self.ioQueue, debug=False)
         self.radioIO.start()
 
+        self.radioPlayer.set_volume(0)
+        self.current_volume = 0
+
         self.PLAYER_COMMANDS = {
             'q': "play",
             'w': "stop",
@@ -43,8 +46,13 @@ class Radio(object):
     def change_station(self, value):
         print("Station: {0}".format(value))
 
-    def change_volume(self, value):
-        print("Volume: {0}".format(value))
+    def change_volume(self, new_volume):
+        print("Set volume to: {}".format(new_volume))
+        #  self.playerQueue.put(new_volume)
+
+        if new_volume != self.current_volume:
+            self.radioPlayer.set_volume(new_volume)
+            self.current_volume = new_volume
 
     def change_mode(self, value):
         if value == "play":
