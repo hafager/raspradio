@@ -30,7 +30,7 @@ class Radio(object):
         self.radioPlayer.set_volume(0)
         self.current_volume = 0
 
-        self.current_station = self.radioStations[0]
+        self.current_station = 0
 
         self.PLAYER_COMMANDS = {
             'q': "play",
@@ -47,6 +47,22 @@ class Radio(object):
 
     def change_station(self, value):
         print("Station: {0}".format(value))
+        #  if value not in range of current station, change to new channel
+        if self.current_station == 0:
+            if value > self.station_values[self.current_station]:
+                self.current_station += 1
+                self.radioPlayer.play_station(self.radioStations[self.current_station]["url"])
+        elif self.current_station == len(self.station_values) - 1:
+            if value <= self.station_values[self.current_station - 1]:
+                self.current_station -= 1
+                self.radioPlayer.play_station(self.radioStations[self.current_station]["url"])
+        elif value > self.station_values[self.current_station]:
+            self.current_station += 1
+            self.radioPlayer.play_station(self.radioStations[self.current_station]["url"])
+        elif value <= self.station_values[self.current_station - 1]:
+            self.current_station -= 1
+            self.radioPlayer.play_station(self.radioStations[self.current_station]["url"])
+
 
     def change_volume(self, new_volume):
         print("Set volume to: {}".format(new_volume))
@@ -113,6 +129,10 @@ def create_station_values(radio_stations):
     station_values = []
     for i in range(1, number_of_stations + 1):
         station_values.append(i * (100//(number_of_stations + 1)))
+    """
+    Example:
+        [ 20, 40, 60, 80 ]
+    """
     return station_values
 
 
