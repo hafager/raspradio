@@ -8,14 +8,22 @@ from threading import Thread
 
 
 """
-    Todo:
+    TODO:
     [X] Make it possible to change channel when not playing without starting the stream.
+    [ ] Change commands to use Popen instead of call.
+    
+    play(self, station)
+    stop(self)
+    set_volume(self, new_volume)
+    mute(self)
     
     Testing:
     mplayer -cache-min 2 http://lyd.nrk.no/nrk_radio_p3_mp3_h
 """
 
 play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
+play_command_new = ['mplayer', '-cache-min', '2']
+stdout_command_new = ['</dev/null', '>/dev/null', '2>&1', '&']
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
 volume_command = "amixer -q sset PCM {}%"
@@ -44,7 +52,19 @@ class Player(Thread):
             "volume_down": self.volumeDown
         }
 
-    def play(self):
+    def play_station(self, station):
+        print(play_command_new + [station])
+        # Do I need to use stdout_command here?
+        p = Popen(play_command_new + [station] + stdout_command_new, stdout=PIPE, stderr=PIPE)
+
+        # A method that can be changed to the station given as an argument. TODO
+        #print(play_command % station["url"])
+        #print(play_command.format(self.radioStations[0]["url"]))
+
+        #call([play_command, station.url])
+        #call(play_command.format(self.radioStations[0]["url"]), shell=True)
+
+    def play_deprecated(self):
         print("Playing current station id {} called {} from URL: {}".format(
                     self.currentStation,
                     self.radioStations[self.currentStation]["name"],
@@ -103,13 +123,7 @@ class Player(Thread):
             call(volume_command.format(new_volume), shell=True)
 
 
-    def playStation(self, station):
-        # A method that can be changed to the station given as an argument. TODO
-        #print(play_command % station["url"])
-        print(play_command.format(self.radioStations[0]["url"]))
 
-        #call([play_command, station.url])
-        call(play_command.format(self.radioStations[0]["url"]), shell=True)
 
     # Overrides then run() method in Thread
     def run(self):

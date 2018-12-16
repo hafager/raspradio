@@ -30,6 +30,8 @@ class Radio(object):
         self.radioPlayer.set_volume(0)
         self.current_volume = 0
 
+        self.current_station = self.radioStations[0]
+
         self.PLAYER_COMMANDS = {
             'q': "play",
             'w': "stop",
