@@ -68,7 +68,7 @@ class Radio(object):
         print("Set volume to: {}".format(new_volume))
         #  self.playerQueue.put(new_volume)
 
-        if new_volume != self.current_volume:
+        if new_volume != self.current_volume and new_volume >= 0 and new_volume <= 100:
             self.radioPlayer.set_volume(new_volume)
             self.current_volume = new_volume
 
