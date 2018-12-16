@@ -1,6 +1,8 @@
 # Methods for controlling the radiosoftware. Should be triggered by events in radioIO.
 
 from subprocess import call
+from subprocess import Popen
+from subprocess import PIPE
 import time
 from threading import Thread
 
@@ -17,6 +19,7 @@ play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
 volume_command = "amixer -q sset PCM {}%"
+get_volume_command = ['amixer', 'sget', 'PCM']
 
 MAX_VOLUME = 100
 
@@ -103,10 +106,10 @@ class Player(Thread):
     def playStation(self, station):
         # A method that can be changed to the station given as an argument. TODO
         #print(play_command % station["url"])
-        print(play_command.format(self.radiostations[0]["url"]))
+        print(play_command.format(self.radioStations[0]["url"]))
 
         #call([play_command, station.url])
-        call(play_command.format(self.radiostations[0]["url"]), shell=True)
+        call(play_command.format(self.radioStations[0]["url"]), shell=True)
 
     # Overrides then run() method in Thread
     def run(self):
@@ -121,3 +124,11 @@ class Player(Thread):
             if action in self.COMMANDS.keys():
                 self.COMMANDS[action]()
             self.queue.task_done()
+
+
+def get_volume():
+    # Expects the volume to show as percent in the 5th line between brackets.
+    p = Popen(get_volume_command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    output = str(p.stdout.readlines()[4])
+    vol = output[output.index('[') + 1:output.index(']') - 1]
+    return vol
