@@ -27,8 +27,8 @@ class Radio(object):
         self.radioIO = RadioIO(self.ioQueue, debug=False)
         self.radioIO.start()
 
-        self.radioPlayer.set_volume(0)
-        self.current_volume = 0
+        self.radioPlayer.set_volume(90)
+        self.current_volume = 90
 
         self.current_station = 0
 
@@ -133,6 +133,7 @@ def create_station_values(radio_stations):
     Example:
         [ 20, 40, 60, 80 ]
     """
+    print(station_values)
     return station_values
 
 

@@ -75,8 +75,8 @@ class RadioIO(Thread):
         """
         self.bus.write_byte(ADDRESS, A0)
         value = self.bus.read_byte(ADDRESS)
-        print("AOUT:%1.3f  " %(value*3.3/255))  # Current voltage
-        print("AOUT:{0:5.1}%".format((value/255)*100))  # Percent of max
+        #print("AOUT:%1.3f  " %(value*3.3/255))  # Current voltage
+        #print("AOUT:{0:5.1}%".format((value/255)*100))  # Percent of max
 
         stationValue = round((value/255)*100, 1)  # Return a number between 0 - 100 with 1 decimal.
 
@@ -111,7 +111,7 @@ class RadioIO(Thread):
     def run(self):
         if not self.debug:
             while True:
-                self.readVolume()
+                self.readStation()
 
                 time.sleep(0.1)
 

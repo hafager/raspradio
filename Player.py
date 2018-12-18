@@ -44,7 +44,6 @@ class Player(Thread):
 
         # Mapping between queue items and local methods.
         self.COMMANDS = {
-            "play": self.play,
             "stop": self.stop,
             "previous": self.previousStation,
             "next": self.nextStation,
@@ -53,7 +52,7 @@ class Player(Thread):
         }
 
     def play_station(self, station):
-        print(play_command_new + [station])
+        print(play_command_new + [station] + stdout_command_new)
         # Do I need to use stdout_command here?
         p = Popen(play_command_new + [station] + stdout_command_new, stdout=PIPE, stderr=PIPE)
 
@@ -83,7 +82,7 @@ class Player(Thread):
             Should be called when the channel is switched
         """
         call(stop_command, shell=True)
-        self.play()
+        self.play_station(self.currentStation)
 
     def nextStation(self):
         """
