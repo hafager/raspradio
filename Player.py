@@ -2,7 +2,7 @@
 
 from subprocess import call
 from subprocess import Popen
-from subprocess import PIPE
+from subprocess import DEVNULL
 import time
 from threading import Thread
 
@@ -54,7 +54,7 @@ class Player(Thread):
     def play_station(self, station):
         print(play_command_new + [station] + stdout_command_new)
         # Do I need to use stdout_command here?
-        p = Popen(play_command_new + [station] + stdout_command_new, stdout=PIPE, stderr=PIPE)
+        p = Popen(play_command_new + [station] + stdout_command_new, stdout=DEVNULL, stderr=DEVNULL)
 
         # A method that can be changed to the station given as an argument. TODO
         #print(play_command % station["url"])
