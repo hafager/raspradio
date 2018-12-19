@@ -7,6 +7,7 @@ from queue import Queue
 
 from Player import Player
 from radioIO import RadioIO
+import utils
 
 #
 # https://github.com/yeokm1/pi-radio
@@ -18,12 +19,10 @@ class Radio(object):
 
     def __init__(self):
         super(Radio, self).__init__()
-        self.playerQueue = Queue()
         self.ioQueue = Queue()
-        self.radioStations = read_radio_stations()
-        self.station_values = create_station_values(self.radioStations)
-        self.radioPlayer = Player(self.playerQueue, self.radioStations)
-        self.radioPlayer.start()
+        self.radioStations = utils.read_radio_stations()
+        self.station_values = utils.create_station_values(self.radioStations)
+        self.radioPlayer = Player(self.radioStations)
         self.radioIO = RadioIO(self.ioQueue, debug=False)
         self.radioIO.start()
 
@@ -74,20 +73,25 @@ class Radio(object):
 
     def change_mode(self, value):
         if value == "play":
-            self.playerQueue.put("play")
+            #self.playerQueue.put("play")
+            print("play")
         elif value == "stop":
-            self.playerQueue.put("stop")
+            #self.playerQueue.put("stop")
+            print("stop")
 
     def change_using_keys(self, value):
         try:
             print("Put {} into the Player Queue".format(self.PLAYER_COMMANDS[value]))
-            self.playerQueue.put(self.PLAYER_COMMANDS[value])
+            # self.playerQueue.put(self.PLAYER_COMMANDS[value])
+            print(self.PLAYER_COMMANDS[value])
         except KeyError:
-            self.playerQueue.put(None)
+            print("None")
+            #self.playerQueue.put(None)
             self.radioPlayer.stop()
             sys.exit("Exiting")
         except KeyboardInterrupt:
-            self.playerQueue.put(None)
+            print("Interrupt")
+            #self.playerQueue.put(None)
             self.radioPlayer.stop()
             sys.exit("KeyboardInterrupt")
 
@@ -96,7 +100,7 @@ class Radio(object):
         while True:
             action = self.ioQueue.get()
             if action is None:
-                self.playerQueue.put(None)
+                #  self.playerQueue.put(None)
                 self.radioPlayer.stop()
                 sys.exit("Exiting")
                 break
@@ -104,37 +108,6 @@ class Radio(object):
             # TODO: Check for invalid values
             self.IO_COMMANDS[action[0]](action[1])
             self.ioQueue.task_done()
-
-
-def read_radio_stations():
-    station_file = open("radiostations.txt", "r")
-    stations = station_file.read().splitlines()
-    station_file.close()
-    radio_stations = []
-    for station in stations:
-        name, url = station.split("|")
-        radio_stations.append({"name": name, "url": url})
-    print(radio_stations)
-    """
-    Example:
-        [
-            {"name": "P3", "url": "https://p3.no"}
-        [
-    """
-    return radio_stations
-
-
-def create_station_values(radio_stations):
-    number_of_stations = len(radio_stations)
-    station_values = []
-    for i in range(1, number_of_stations + 1):
-        station_values.append(i * (100//(number_of_stations + 1)))
-    """
-    Example:
-        [ 20, 40, 60, 80 ]
-    """
-    print(station_values)
-    return station_values
 
 
 def main():

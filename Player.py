@@ -18,11 +18,11 @@ from threading import Thread
     mute(self)
     
     Testing:
-    mplayer -cache-min 2 http://lyd.nrk.no/nrk_radio_p3_mp3_h
+    mplayer -cache-min 2 http://lyd.nrk.no/nrk_radio_p2_mp3_h
 """
 
 play_command = "mplayer -cache-min 2 {} </dev/null >/dev/null 2>&1 &"
-play_command_new = ['mplayer', '-cache-min', '2']
+play_command_new = ['mplayer', '-quiet', '-cache-min', '2']
 stdout_command_new = ['</dev/null', '>/dev/null', '2>&1', '&']
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
@@ -31,30 +31,21 @@ get_volume_command = ['amixer', 'sget', 'PCM']
 
 MAX_VOLUME = 100
 
-class Player(Thread):
+class Player():
     """
         docstring for Player.
     """
-    def __init__(self, queue, radioStations):
+    def __init__(self, radioStations):
         super(Player, self).__init__()
-        self.queue = queue
         self.status = "stopped"
         self.radioStations = radioStations
         self.currentStation = 0
 
-        # Mapping between queue items and local methods.
-        self.COMMANDS = {
-            "stop": self.stop,
-            "previous": self.previousStation,
-            "next": self.nextStation,
-            "volume_up": self.volumeUp,
-            "volume_down": self.volumeDown
-        }
-
     def play_station(self, station):
-        print(play_command_new + [station] + stdout_command_new)
+        call(stop_command, shell=True)
+        print(play_command_new + [station])
         # Do I need to use stdout_command here?
-        p = Popen(play_command_new + [station] + stdout_command_new, stdout=DEVNULL, stderr=DEVNULL)
+        p = Popen(play_command_new + [station], stdout=DEVNULL)
 
         # A method that can be changed to the station given as an argument. TODO
         #print(play_command % station["url"])
@@ -120,23 +111,6 @@ class Player(Thread):
         else:
             print("Setting volume to {}".format(new_volume))
             call(volume_command.format(new_volume), shell=True)
-
-
-
-
-    # Overrides then run() method in Thread
-    def run(self):
-        while True:
-            action = self.queue.get()
-            print("Found {} in the Player Queue".format(action))
-            if action is None:
-                break
-            #
-            # Execute the action.
-            #
-            if action in self.COMMANDS.keys():
-                self.COMMANDS[action]()
-            self.queue.task_done()
 
 
 def get_volume():
