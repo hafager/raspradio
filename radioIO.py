@@ -43,8 +43,8 @@ class RadioIO(Thread):
         self.queue = queue
         if not self.debug:
             self.bus = smbus.SMBus(1)
-            self.currentVolume = self.readPin(A2)
-            self.currentStation = self.readPin(A1) # self.readStation() Have to find a way to initialize the values.
+            self.currentVolume = self.readPin(A1)
+            self.currentStation = self.readPin(A0) # self.readStation() Have to find a way to initialize the values.
         self.currentVolume = 0
         self.currentStation = 0
 
