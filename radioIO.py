@@ -43,8 +43,8 @@ class RadioIO(Thread):
         self.queue = queue
         if not self.debug:
             self.bus = smbus.SMBus(1)
-            self.currentVolume = 0 # self.readVolume()
-            self.currentStation = 0 # self.readStation() Have to find a way to initialize the values.
+            self.currentVolume = self.readPin(A2)
+            self.currentStation = self.readPin(A1) # self.readStation() Have to find a way to initialize the values.
         self.currentVolume = 0
         self.currentStation = 0
 
@@ -60,7 +60,7 @@ class RadioIO(Thread):
         """
             ["volume", 10.0]
         """
-        self.bus.write_byte(ADDRESS, A0)
+        self.bus.write_byte(ADDRESS, A1)
         value = self.bus.read_byte(ADDRESS)
 
         volume_level = int((value / 255) * 100)  # Return a number between 0 - 100 with 1 decimal.
@@ -105,14 +105,18 @@ class RadioIO(Thread):
             sys.exit("Exiting")
         # return key
 
-    def readPin(self):
-        return 1
+    def readPin(self, PIN):
+        self.bus.write_byte(ADDRESS, PIN)
+        value = self.bus.read_byte(ADDRESS)
+
+        level = int((value / 255) * 100)
+        return level
 
     def run(self):
         if not self.debug:
             while True:
                 self.readStation()
-
+                self.readVolume()
                 time.sleep(0.1)
 
         if self.debug:
