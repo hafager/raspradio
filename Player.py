@@ -27,7 +27,6 @@ stdout_command_new = ['</dev/null', '>/dev/null', '2>&1', '&']
 stop_command = "killall mplayer"
 stdout_command = " </dev/null >/dev/null 2>&1 &"
 volume_command = "amixer -q sset PCM {}%"
-get_volume_command = ['amixer', 'sget', 'PCM']
 
 MAX_VOLUME = 100
 

@@ -26,8 +26,8 @@ class Radio(object):
         self.radioIO = RadioIO(self.ioQueue, debug=False)
         self.radioIO.start()
 
-        self.radioPlayer.set_volume(90)
-        self.current_volume = 90
+        self.current_volume = self.radioIO.currentVolume
+        self.radioPlayer.set_volume(self.current_volume)
 
         self.current_station = 0
 

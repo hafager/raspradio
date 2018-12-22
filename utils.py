@@ -1,3 +1,10 @@
+
+from subprocess import Popen
+from subprocess import PIPE
+from subprocess import DEVNULL
+
+get_volume_command = ['amixer', 'sget', 'PCM']
+
 def read_radio_stations():
     station_file = open("radiostations.txt", "r")
     stations = station_file.read().splitlines()
@@ -27,3 +34,10 @@ def create_station_values(radio_stations):
     """
     print(station_values)
     return station_values
+
+def get_volume():
+    # Expects the volume to show as percent in the 5th line between brackets.
+    p = Popen(get_volume_command, stdin=DEVNULL, stdout=PIPE, stderr=DEVNULL)
+    output = str(p.stdout.readlines()[4])
+    vol = output[output.index('[') + 1:output.index(']') - 1]
+    return vol
