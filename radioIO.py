@@ -111,7 +111,7 @@ class RadioIO(Thread):
 
         level = int((value / 255) * 100)
 
-        print("PIN " + PIN + ": " + str(level))
+        print("PIN " + hex(PIN) + ": " + str(level))
         return level
 
     def run(self):
