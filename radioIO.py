@@ -110,6 +110,8 @@ class RadioIO(Thread):
         value = self.bus.read_byte(ADDRESS)
 
         level = int((value / 255) * 100)
+
+        print("PIN " + PIN + ": " + str(level))
         return level
 
     def run(self):
